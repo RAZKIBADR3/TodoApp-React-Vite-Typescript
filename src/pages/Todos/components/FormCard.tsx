@@ -1,29 +1,27 @@
 import { useRef } from "react"
 import ButtonCard from "../../../components/form/ButtonCard"
 import InputCard from "../../../components/form/InputCard"
-import type { DataCardProps } from "../../Home/types/DataCardProps";
+import { useTodo } from "../context/useTodo";
 
-export default function FormCard({setData, data}: DataCardProps) {
+export default function FormCard() {
     const inputRef = useRef<HTMLInputElement>(null);
+    const { addTodo } = useTodo();
 
-    const handleClick = (event: React.SubmitEvent<HTMLFormElement>) => {
-        event.preventDefault()
+    const handleClick = (e: React.SubmitEvent) => {
+        e.preventDefault()
 
-        const value = inputRef.current?.value;
+        const value = inputRef.current?.value.trim();
         if (!value) return;
+
+        addTodo(value);
         
-        addPost(value);
+        inputRef.current!.value = "";
     }
-
-    const addPost = (value: string) => {
-        setData([...data, {content: value.trim(), editOpen: false}]);
-    }
-
 
     return (
-        <form className="min-h-10 w-130 p-3 flex gap-1 rounded-xl shadow-sm" onSubmit={event => handleClick(event)}>
+        <form className="min-h-10 w-130 p-3 flex gap-1 rounded-xl shadow-sm" onSubmit={handleClick}>
             <InputCard title="what's on your mind" ref={inputRef} />
-            <ButtonCard title="submit" buttonType="submit"/>
+            <ButtonCard title="add" buttonType="submit"/>
         </form>
     )
 }
