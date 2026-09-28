@@ -1,5 +1,5 @@
 import { useRef, type RefObject } from "react";
-import type { Post } from "../types/Post";
+import type { Post } from "../../Home/types/Post";
 
 type PostCardProps = {
   post: Post;

@@ -1,12 +1,15 @@
 import './style/App.css'
 import Home from './pages/Home/Home'
+import Todos from './pages/Todos/components/Todos'
+import { Route, Routes } from 'react-router-dom'
 
 function App() {
 
   return (
-    <>
-      <Home />
-    </>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/todos" element={<Todos />} />
+    </Routes>
   )
 }
 

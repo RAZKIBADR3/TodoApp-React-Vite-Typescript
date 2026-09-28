@@ -1,6 +1,6 @@
 import type { RefObject } from "react";
-import type { DataCardProps } from "../types/DataCardProps";
-import type { Post } from "../types/Post";
+import type { DataCardProps } from "../../Home/types/DataCardProps";
+import type { Post } from "../../Home/types/Post";
 import PostCard from "./PostCard";
 
 function PostsCard({data, setData}: DataCardProps) {

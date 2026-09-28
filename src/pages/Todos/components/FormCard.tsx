@@ -1,7 +1,7 @@
 import { useRef } from "react"
 import ButtonCard from "../../../components/form/ButtonCard"
 import InputCard from "../../../components/form/InputCard"
-import type { DataCardProps } from "../types/DataCardProps";
+import type { DataCardProps } from "../../Home/types/DataCardProps";
 
 export default function FormCard({setData, data}: DataCardProps) {
     const inputRef = useRef<HTMLInputElement>(null);
