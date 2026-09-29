@@ -1,7 +1,10 @@
-import { useRef, type RefObject } from "react";
+import { useEffect, useRef } from "react";
 import { useTodo } from "../context/useTodo";
 import type { Todo } from "../types/Todo";
 import InputCard from "../../../components/form/InputCard";
+import DeleteIcon from "../../../components/icons/DeleteIcon";
+import CheckIcon from "../../../components/icons/CheckIcon";
+import EditIcon from "../../../components/icons/EditIcon";
 
 interface TodoCardProps {
   todo: Todo;
@@ -11,7 +14,12 @@ function TodoCard({ todo }: TodoCardProps) {
     const inputRef = useRef<HTMLInputElement>(null);
     const { deleteTodo, toggleTodo, updateTodo } = useTodo();
 
-    const handleUpdate = (todo: Todo, inputRef: RefObject<HTMLInputElement | null>, e?: React.SubmitEvent) => {
+    useEffect(() => {
+        if (!todo.completed) 
+            inputRef.current?.focus();
+    }, [todo.completed]);
+
+    const handleUpdate = (todo: Todo, e?: React.SubmitEvent) => {
         if(e) e.preventDefault()
 
         const value = inputRef.current?.value.trim();
@@ -27,39 +35,58 @@ function TodoCard({ todo }: TodoCardProps) {
         deleteTodo(todo);
     }
 
-    return(
-        <div className="w-full py-2 px-3 border rounded-md border-blue-500 flex justify-between items-center">
-            { todo.completed
-                ? <h1 className="capitalize text-black font-medium text-xl">{todo.content}</h1>
+    return (
+    <div
+      className={`group flex w-full items-center gap-4 rounded-2xl border p-4 transition-all duration-200 ${
+        todo.completed
+          ? "border-gray-200 bg-gray-50"
+          : "border-gray-200 bg-white shadow-sm hover:border-gray-300 hover:shadow-md"
+      }`}
+    >
 
-                : <form className="w-full" onSubmit={(event) => handleUpdate(todo, inputRef, event)}>
-                    <InputCard ref={inputRef} value={todo.content} />
-                  </form>
-            }
+      {/* Content */}
+      <div className="min-w-0 flex-1">
+        { todo.completed 
+            ?   <h1 className="text-base font-medium text-gray-800">
+                    {todo.content}
+                </h1>
+            
+            :   <form className="w-full" onSubmit={(event) => handleUpdate(todo, event)}>
+                    <InputCard ref={inputRef} value={todo.content}/>
+                </form>
+        }
+      </div>
 
-            <div className="flex gap-3">
-                { todo.completed 
-                    ?   <i className="cursor-pointer bg-gray-700 rounded-sm text-white p-1" onClick={() => toggleTodo(todo)}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                            </svg>
-                        </i>
+      {/* Actions */}
+      <div className="flex shrink-0 items-center gap-2">
+        {/* Update */}
+        { todo.completed 
+            ?   <button
+                    type="button" onClick={() => toggleTodo(todo)}
+                    className="flex size-9 items-center justify-center rounded-lg bg-gray-100 text-gray-600 transition hover:bg-gray-200 cursor-pointer"
+                >
+                    <EditIcon />
+                </button>
 
-                    :   <i className="cursor-pointer bg-green-500 rounded-sm text-white p-1" onClick={() => handleUpdate(todo, inputRef)}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                            </svg>
-                        </i>
-                }
+            :   <button
+                    type="submit" onClick={() => handleUpdate(todo)}
+                    className="flex size-9 items-center justify-center rounded-lg bg-green-500 text-white transition hover:bg-green-600 cursor-pointer"
+                >
+                    <CheckIcon />
+                </button>
+        }
 
-                <i className="cursor-pointer bg-red-700 rounded-sm text-white p-1" onClick={() => handleDelete(todo)}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                    </svg>
-                </i>
-            </div>
-        </div>
-    )
+        {/* Delete */}
+        <button
+            type="button" onClick={() => handleDelete(todo)}
+            className="flex size-9 items-center justify-center rounded-lg bg-red-50 text-red-500 transition hover:bg-red-100 hover:text-red-600 cursor-pointer"
+        >
+          <DeleteIcon />
+        </button>
+
+      </div>
+    </div>
+  );
 }
 
 export default TodoCard

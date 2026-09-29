@@ -7,7 +7,7 @@ export default function FormCard() {
     const inputRef = useRef<HTMLInputElement>(null);
     const { addTodo } = useTodo();
 
-    const handleClick = (e: React.SubmitEvent) => {
+    const handleSubmit = (e: React.SubmitEvent) => {
         e.preventDefault()
 
         const value = inputRef.current?.value.trim();
@@ -19,9 +19,12 @@ export default function FormCard() {
     }
 
     return (
-        <form className="min-h-10 w-130 p-3 flex gap-1 rounded-xl shadow-sm" onSubmit={handleClick}>
-            <InputCard title="what's on your mind" ref={inputRef} />
-            <ButtonCard title="add" buttonType="submit"/>
+        <form 
+            onSubmit={handleSubmit} 
+            className="mx-auto flex w-full max-w-2xl items-center gap-2 rounded-2xl border border-gray-200 bg-white p-2 shadow-lg shadow-gray-200/50"
+        >
+            <InputCard ref={inputRef} title="what's on your mind?" />
+            <ButtonCard title="Add task" buttonType="submit" />
         </form>
     )
 }
