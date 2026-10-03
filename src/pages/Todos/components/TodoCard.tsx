@@ -12,28 +12,34 @@ interface TodoCardProps {
 
 function TodoCard({ todo }: TodoCardProps) {
     const inputRef = useRef<HTMLInputElement>(null);
-    const { deleteTodo, toggleTodo, updateTodo } = useTodo();
+    const { dispatch } = useTodo();
 
     useEffect(() => {
-        if (!todo.completed) 
-            inputRef.current?.focus();
+      if (!todo.completed) 
+        inputRef.current?.focus();
+
     }, [todo.completed]);
 
-    const handleUpdate = (todo: Todo, e?: React.SubmitEvent) => {
-        if(e) e.preventDefault()
-
-        const value = inputRef.current?.value.trim();
-        if (!value) return;
-
-        updateTodo(todo, value);
-    }
-
+    
     const handleDelete = (todo: Todo) => {
-        const confirm = window.confirm(`Are you sure you want to delete "${todo.content}"?`);
-        if (!confirm) return;
+      const confirm = window.confirm(`Are you sure you want to delete "${todo.content}"?`);
+      if (!confirm) return;
 
-        deleteTodo(todo);
+      dispatch({ type: "DELETE_TODO", payload: {todo: todo} })
     }
+
+    const handleUpdate = (todo: Todo, e?: React.SubmitEvent) => {
+      if(e) e.preventDefault()
+
+      const value = inputRef.current?.value.trim();
+      if (!value) return;
+
+      dispatch({ type: "UPDATE_TODO", payload: {content: value, todo: todo} })
+    }
+
+    const handleToggle = (todo: Todo) => 
+      dispatch({ type: "TOGGLE_TODO", payload: {todo: todo} })
+
 
     return (
     <div
@@ -62,7 +68,7 @@ function TodoCard({ todo }: TodoCardProps) {
         {/* Update */}
         { todo.completed 
             ?   <button
-                    type="button" onClick={() => toggleTodo(todo)}
+                    type="button" onClick={() => handleToggle(todo)}
                     className="flex size-9 items-center justify-center rounded-lg bg-gray-100 text-gray-600 transition hover:bg-gray-200 cursor-pointer"
                 >
                     <EditIcon />

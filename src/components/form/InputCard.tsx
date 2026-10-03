@@ -3,6 +3,7 @@ import type { InputCardProps } from "../../types/InputCardProps"
 
 const InputCard = forwardRef<HTMLInputElement, InputCardProps>(
   ({title, value}, ref) => {
+    
     return (   
       <div className="flex-1">
         <input

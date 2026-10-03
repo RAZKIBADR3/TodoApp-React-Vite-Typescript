@@ -1,37 +1,41 @@
-import { useState, type ReactNode } from "react";
+import { useReducer, type ReactNode } from "react";
 import type { Todo } from "../types/Todo";
 import { TodoContext } from "./TodoContext";
 
-interface TodoProviderProps {
-  children: ReactNode;
+const initialTodoState:Todo[] = [];
+
+export type todoAction =
+  | { type: "ADD_TODO"; payload: {content: string} }
+  | { type: "DELETE_TODO"; payload: {todo: Todo} }
+  | { type: "TOGGLE_TODO"; payload: {todo: Todo} }
+  | { type: "UPDATE_TODO"; payload: {content: string, todo: Todo} }
+
+const todoReducer = (state: Todo[], action: todoAction) => {
+  switch(action.type) {
+    case 'ADD_TODO':
+      return [...state, { content: action.payload.content, completed: true}]
+    
+    case 'DELETE_TODO':
+      return state.filter((todo) => todo !== action.payload.todo)
+
+    case 'TOGGLE_TODO':
+      return state.map((todo) => todo === action.payload.todo 
+        ? { ...todo, completed: !todo.completed } : todo )
+    
+    case 'UPDATE_TODO':
+      return state.map((todo) => todo === action.payload.todo 
+        ? { content: action.payload.content, completed: true } : todo)
+
+    default:
+      return state;
+  }
 }
 
-export function TodoProvider({ children }: TodoProviderProps) {
-    const [todos, setTodos] = useState<Todo[]>([]);
+export function TodoProvider({ children }: {children: ReactNode}) {
+  const [todos, dispatch] = useReducer(todoReducer, initialTodoState);
 
-    const addTodo = (content: string) => {
-      const newTodo: Todo = { content, completed: true, /*id: Date.now()*/ };
-      setTodos((prev) => [...prev, newTodo]);
-    };
-
-    const deleteTodo = (todo: Todo) => {
-      setTodos((prev) => prev.filter((t) => t !== todo));
-    };
-
-    const toggleTodo = (todo: Todo) => {
-      setTodos((prev) =>
-        prev.map((p) => p === todo ? { ...p, completed: !p.completed } : p )
-      );
-    };
-
-    const updateTodo = (todo: Todo, content: string) => {
-      setTodos((prev) =>
-        prev.map((p) => p === todo ? { content, completed: true } : p)
-      );
-    }
-
-    return (
-    <TodoContext.Provider value={{ todos, addTodo, deleteTodo, toggleTodo, updateTodo}} >
+  return (
+    <TodoContext.Provider value={{ todos, dispatch }} >
       {children}
     </TodoContext.Provider>
   );

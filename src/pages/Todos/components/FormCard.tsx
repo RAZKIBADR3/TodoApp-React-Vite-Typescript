@@ -5,7 +5,7 @@ import { useTodo } from "../context/useTodo";
 
 export default function FormCard() {
     const inputRef = useRef<HTMLInputElement>(null);
-    const { addTodo } = useTodo();
+    const { dispatch } = useTodo();
 
     const handleSubmit = (e: React.SubmitEvent) => {
         e.preventDefault()
@@ -13,10 +13,12 @@ export default function FormCard() {
         const value = inputRef.current?.value.trim();
         if (!value) return;
 
-        addTodo(value);
-        
-        inputRef.current!.value = "";
+        dispatch({ type: 'ADD_TODO', payload:{content: value} });        
+        inputClear();
     }
+
+    const inputClear = () =>
+        inputRef.current!.value = "";
 
     return (
         <form 

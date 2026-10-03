@@ -4,9 +4,8 @@ import { TodoContext } from "./TodoContext";
 export function useTodo() {
     const context = useContext(TodoContext);
 
-    if (!context) {
+    if (!context)
         throw new Error("useTodo must be used inside TodoProvider");
-    }
 
     return context;
 }

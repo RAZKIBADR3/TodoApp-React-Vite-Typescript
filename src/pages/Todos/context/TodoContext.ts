@@ -1,12 +1,10 @@
 import { createContext } from "react";
 import type { Todo } from "../types/Todo";
+import type { todoAction } from "./TodoProvider";
 
 interface TodoContextType {
   todos: Todo[];
-  addTodo: (content: string) => void;
-  deleteTodo: (todo: Todo) => void;
-  toggleTodo: (todo: Todo) => void;
-  updateTodo: (todo: Todo, content: string) => void;
+  dispatch: React.Dispatch<todoAction>;
 }
 
-export const TodoContext = createContext<TodoContextType | undefined>(undefined);
+export const TodoContext = createContext<TodoContextType | null>(null);
